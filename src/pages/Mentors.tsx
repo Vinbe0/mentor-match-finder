@@ -6,16 +6,20 @@ import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import MentorCard from "@/components/MentorCard";
 import { mentors, subjects } from "@/data/mentors";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Mentors = () => {
   const [search, setSearch] = useState("");
   const [subject, setSubject] = useState("all");
   const [sortBy, setSortBy] = useState("rating");
-  const [maxPrice, setMaxPrice] = useState([10000]);
+  const [maxPrice, setMaxPrice] = useState([15000]);
   const [showFilters, setShowFilters] = useState(false);
+  const { customMentors } = useAuth();
+
+  const allMentors = useMemo(() => [...mentors, ...customMentors], [customMentors]);
 
   const filtered = useMemo(() => {
-    let result = mentors.filter((m) => {
+    let result = allMentors.filter((m) => {
       const matchSearch =
         m.name.toLowerCase().includes(search.toLowerCase()) ||
         m.bio.toLowerCase().includes(search.toLowerCase());
@@ -33,7 +37,7 @@ const Mentors = () => {
     });
 
     return result;
-  }, [search, subject, sortBy, maxPrice]);
+  }, [search, subject, sortBy, maxPrice, allMentors]);
 
   return (
     <div className="container py-8 md:py-12">
@@ -42,7 +46,6 @@ const Mentors = () => {
         <p className="text-muted-foreground">Browse our community of expert mentors</p>
       </div>
 
-      {/* Search and filters */}
       <div className="space-y-4 mb-8">
         <div className="flex gap-3">
           <div className="relative flex-1">
@@ -93,7 +96,7 @@ const Mentors = () => {
             <Slider
               value={maxPrice}
               onValueChange={setMaxPrice}
-              max={10000}
+              max={15000}
               min={1000}
               step={500}
               className="flex-1"
@@ -103,7 +106,6 @@ const Mentors = () => {
         </div>
       </div>
 
-      {/* Results */}
       <div className="mb-4 text-sm text-muted-foreground">
         {filtered.length} mentor{filtered.length !== 1 ? "s" : ""} found
       </div>
