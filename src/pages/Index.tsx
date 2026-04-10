@@ -15,7 +15,7 @@ const Index = () => {
               <span className="text-gradient">Mentor</span>
             </h1>
             <p className="mt-6 text-lg text-muted-foreground max-w-lg mx-auto">
-              Connect with experienced tutors across Kazakhstan. Personalized learning, flexible schedule, proven results.
+              Connect with experienced professionals who'll accelerate your career. Programming, design, marketing & more.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
               <Button size="lg" variant="hero" asChild>
