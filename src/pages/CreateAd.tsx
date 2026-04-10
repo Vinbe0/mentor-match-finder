@@ -42,7 +42,7 @@ const CreateAd = () => {
     const newMentor: Mentor = {
       id: crypto.randomUUID(),
       name,
-      avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=2a9d8f&color=fff&size=200`,
+      avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=d94080&color=fff&size=200`,
       subject: selectedSubjects[0],
       subjects: selectedSubjects,
       rating: 0,
