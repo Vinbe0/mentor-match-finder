@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 99%;
+    --background: 240 20% 98%;
     --foreground: 240 10% 10%;
 
     --card: 0 0% 100%;
@@ -17,28 +17,38 @@
 
     --primary: 330 80% 55%;
     --primary-foreground: 0 0% 100%;
+    --primary-glow: 300 70% 60%;
 
-    --secondary: 330 20% 95%;
+    --secondary: 240 30% 96%;
     --secondary-foreground: 240 10% 10%;
 
-    --muted: 240 5% 96%;
+    --muted: 240 10% 95%;
     --muted-foreground: 240 5% 46%;
 
-    --accent: 330 90% 62%;
+    --accent: 270 70% 60%;
     --accent-foreground: 0 0% 100%;
+
+    --info: 200 80% 55%;
+    --info-foreground: 0 0% 100%;
+
+    --success: 160 60% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --warm: 30 90% 60%;
+    --warm-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 240 6% 90%;
-    --input: 240 6% 90%;
+    --border: 240 10% 91%;
+    --input: 240 10% 91%;
     --ring: 330 80% 55%;
 
     --radius: 0.75rem;
 
-    --hero-gradient: linear-gradient(135deg, hsl(330 80% 55%), hsl(330 80% 42%));
-    --card-shadow: 0 2px 12px -2px hsl(240 10% 10% / 0.08);
-    --card-shadow-hover: 0 8px 30px -4px hsl(240 10% 10% / 0.12);
+    --hero-gradient: linear-gradient(135deg, hsl(330 80% 55%), hsl(270 70% 60%));
+    --card-shadow: 0 2px 12px -2px hsl(240 10% 10% / 0.06);
+    --card-shadow-hover: 0 12px 40px -8px hsl(270 70% 60% / 0.15);
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -51,32 +61,51 @@
   }
 
   .dark {
-    --background: 240 10% 6%;
-    --foreground: 0 0% 95%;
-    --card: 240 10% 10%;
-    --card-foreground: 0 0% 95%;
-    --popover: 240 10% 10%;
-    --popover-foreground: 0 0% 95%;
+    --background: 250 20% 7%;
+    --foreground: 240 10% 93%;
+
+    --card: 250 20% 11%;
+    --card-foreground: 240 10% 93%;
+
+    --popover: 250 20% 11%;
+    --popover-foreground: 240 10% 93%;
+
     --primary: 330 80% 60%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 10% 16%;
-    --secondary-foreground: 0 0% 95%;
-    --muted: 240 10% 16%;
+    --primary-glow: 300 70% 65%;
+
+    --secondary: 250 20% 16%;
+    --secondary-foreground: 240 10% 93%;
+
+    --muted: 250 15% 16%;
     --muted-foreground: 240 5% 60%;
-    --accent: 330 90% 62%;
+
+    --accent: 270 70% 65%;
     --accent-foreground: 0 0% 100%;
+
+    --info: 200 80% 60%;
+    --info-foreground: 0 0% 100%;
+
+    --success: 160 60% 50%;
+    --success-foreground: 0 0% 100%;
+
+    --warm: 30 90% 65%;
+    --warm-foreground: 0 0% 100%;
+
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 100%;
-    --border: 240 10% 20%;
-    --input: 240 10% 20%;
+
+    --border: 250 15% 20%;
+    --input: 250 15% 20%;
     --ring: 330 80% 60%;
-    --sidebar-background: 240 10% 6%;
+
+    --sidebar-background: 250 20% 7%;
     --sidebar-foreground: 0 0% 95%;
     --sidebar-primary: 330 80% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 10% 13%;
+    --sidebar-accent: 250 20% 13%;
     --sidebar-accent-foreground: 0 0% 95%;
-    --sidebar-border: 240 10% 20%;
+    --sidebar-border: 250 15% 20%;
     --sidebar-ring: 330 80% 60%;
   }
 }
@@ -106,6 +135,31 @@
 
   .text-gradient {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(330 80% 55%), hsl(330 80% 40%));
+    background-image: linear-gradient(135deg, hsl(330 80% 55%), hsl(270 70% 60%));
   }
+
+  .surface-glass {
+    @apply bg-card/60 backdrop-blur-xl border;
+  }
+
+  .gradient-mesh {
+    background:
+      radial-gradient(ellipse at 20% 50%, hsl(330 80% 55% / 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, hsl(270 70% 60% / 0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 80%, hsl(200 80% 55% / 0.04) 0%, transparent 50%);
+  }
+
+  .dark .gradient-mesh {
+    background:
+      radial-gradient(ellipse at 20% 50%, hsl(330 80% 55% / 0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, hsl(270 70% 60% / 0.1) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 80%, hsl(200 80% 55% / 0.06) 0%, transparent 50%);
+  }
+
+  .category-programming { --cat-color: 200 80% 55%; }
+  .category-design { --cat-color: 330 80% 55%; }
+  .category-marketing { --cat-color: 30 90% 60%; }
+  .category-data { --cat-color: 270 70% 60%; }
+  .category-product { --cat-color: 160 60% 45%; }
+  .category-default { --cat-color: 240 10% 46%; }
 }
