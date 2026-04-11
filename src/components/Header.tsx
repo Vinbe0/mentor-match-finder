@@ -21,21 +21,23 @@ const Header = () => {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b surface-glass">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-2 font-bold text-xl">
-          <GraduationCap className="h-7 w-7 text-primary" />
+          <div className="h-8 w-8 rounded-lg hero-gradient flex items-center justify-center">
+            <GraduationCap className="h-5 w-5 text-primary-foreground" />
+          </div>
           <span className="text-gradient">Talimger</span>
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-1">
           {navLinks.map((link) => (
             <Link
               key={link.to}
               to={link.to}
-              className={`text-sm font-medium transition-colors hover:text-primary ${
-                location.pathname === link.to ? "text-primary" : "text-muted-foreground"
+              className={`text-sm font-medium px-3 py-2 rounded-lg transition-colors hover:bg-muted ${
+                location.pathname === link.to ? "text-primary bg-primary/5" : "text-muted-foreground"
               }`}
             >
               {link.label}
@@ -48,7 +50,7 @@ const Header = () => {
           {user ? (
             <>
               <span className="text-sm text-muted-foreground px-2">
-                {user.name} <span className="text-xs">({user.role})</span>
+                {user.name} <span className="text-xs px-1.5 py-0.5 rounded-md bg-accent/10 text-accent">{user.role}</span>
               </span>
               {user.role === "mentor" && (
                 <Button variant="outline" size="sm" asChild>
@@ -64,7 +66,7 @@ const Header = () => {
               <Button variant="ghost" size="sm" asChild>
                 <Link to="/login">Log in</Link>
               </Button>
-              <Button size="sm" asChild>
+              <Button size="sm" variant="hero" asChild>
                 <Link to="/signup">Sign up</Link>
               </Button>
             </>
@@ -83,20 +85,20 @@ const Header = () => {
       {/* Mobile menu */}
       {mobileOpen && (
         <div className="md:hidden border-t bg-card p-4 animate-fade-in">
-          <nav className="flex flex-col gap-3">
+          <nav className="flex flex-col gap-1">
             {navLinks.map((link) => (
               <Link
                 key={link.to}
                 to={link.to}
                 onClick={() => setMobileOpen(false)}
-                className={`text-sm font-medium py-2 transition-colors hover:text-primary ${
-                  location.pathname === link.to ? "text-primary" : "text-muted-foreground"
+                className={`text-sm font-medium py-2 px-3 rounded-lg transition-colors hover:bg-muted ${
+                  location.pathname === link.to ? "text-primary bg-primary/5" : "text-muted-foreground"
                 }`}
               >
                 {link.label}
               </Link>
             ))}
-            <div className="flex gap-3 pt-2 border-t">
+            <div className="flex gap-3 pt-3 mt-2 border-t">
               {user ? (
                 <>
                   <span className="text-sm text-muted-foreground py-2">{user.name} ({user.role})</span>
@@ -109,7 +111,7 @@ const Header = () => {
                   <Button variant="ghost" size="sm" asChild className="flex-1">
                     <Link to="/login">Log in</Link>
                   </Button>
-                  <Button size="sm" asChild className="flex-1">
+                  <Button size="sm" variant="hero" asChild className="flex-1">
                     <Link to="/signup">Sign up</Link>
                   </Button>
                 </>

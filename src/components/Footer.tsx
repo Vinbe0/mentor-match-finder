@@ -3,16 +3,18 @@ import { GraduationCap } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="border-t bg-card">
+    <footer className="border-t bg-secondary/50">
       <div className="container py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-2">
             <Link to="/" className="flex items-center gap-2 font-bold text-lg mb-3">
-              <GraduationCap className="h-6 w-6 text-primary" />
+              <div className="h-7 w-7 rounded-lg hero-gradient flex items-center justify-center">
+                <GraduationCap className="h-4 w-4 text-primary-foreground" />
+              </div>
               <span className="text-gradient">Talimger</span>
             </Link>
             <p className="text-sm text-muted-foreground max-w-sm">
-              Find the perfect mentor to guide your learning journey. Quality education, personalized for you.
+              Find the perfect mentor to guide your professional journey. Quality education, personalized for you.
             </p>
           </div>
           <div>
