@@ -1,9 +1,12 @@
 import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Star, MapPin, Clock, Globe, BookOpen, MessageCircle, Send } from "lucide-react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { ArrowLeft, Star, MapPin, Clock, Globe, BookOpen, MessageCircle, Send, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { mentors } from "@/data/mentors";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
@@ -21,12 +24,17 @@ const categoryColor: Record<string, string> = {
 
 const MentorDetail = () => {
   const { id } = useParams();
-  const { user, userReviews, addReview } = useAuth();
+  const { user, userReviews, addReview, addBooking, getOrCreateChat } = useAuth();
+  const navigate = useNavigate();
   const mentor = mentors.find((m) => m.id === id);
 
   const [reviewText, setReviewText] = useState("");
   const [reviewRating, setReviewRating] = useState(5);
   const [hoverRating, setHoverRating] = useState(0);
+  const [bookingDate, setBookingDate] = useState("");
+  const [bookingTime, setBookingTime] = useState("");
+  const [bookingSubject, setBookingSubject] = useState("");
+  const [bookingOpen, setBookingOpen] = useState(false);
 
   if (!mentor) {
     return (
@@ -124,11 +132,93 @@ const MentorDetail = () => {
           </div>
 
           <div className="flex gap-3 mt-6">
-            <Button size="lg" variant="hero" className="flex-1 md:flex-none" disabled={!mentor.available}>
-              <BookOpen className="h-4 w-4" />
-              {mentor.available ? "Book a Session" : "Currently Unavailable"}
-            </Button>
-            <Button size="lg" variant="outline">
+            {user ? (
+              <Dialog open={bookingOpen} onOpenChange={setBookingOpen}>
+                <DialogTrigger asChild>
+                  <Button size="lg" variant="hero" className="flex-1 md:flex-none" disabled={!mentor.available}>
+                    <BookOpen className="h-4 w-4" />
+                    {mentor.available ? "Book a Session" : "Currently Unavailable"}
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Book a session with {mentor.name}</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4 pt-2">
+                    <div>
+                      <label className="text-sm font-medium mb-1.5 block">Date</label>
+                      <Input type="date" value={bookingDate} onChange={(e) => setBookingDate(e.target.value)} min={new Date().toISOString().split("T")[0]} />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium mb-1.5 block">Time</label>
+                      <Select value={bookingTime} onValueChange={setBookingTime}>
+                        <SelectTrigger><SelectValue placeholder="Select time" /></SelectTrigger>
+                        <SelectContent>
+                          {["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"].map((t) => (
+                            <SelectItem key={t} value={t}>{t}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium mb-1.5 block">Subject</label>
+                      <Select value={bookingSubject} onValueChange={setBookingSubject}>
+                        <SelectTrigger><SelectValue placeholder="Select subject" /></SelectTrigger>
+                        <SelectContent>
+                          {mentor.subjects.map((s) => (
+                            <SelectItem key={s} value={s}>{s}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex items-center justify-between text-sm p-3 rounded-lg bg-muted">
+                      <span className="text-muted-foreground">Session price</span>
+                      <span className="font-bold text-foreground">{mentor.price.toLocaleString()} ₸/hr</span>
+                    </div>
+                    <Button
+                      variant="hero"
+                      className="w-full"
+                      disabled={!bookingDate || !bookingTime || !bookingSubject}
+                      onClick={() => {
+                        addBooking({
+                          id: crypto.randomUUID(),
+                          mentorId: mentor.id,
+                          mentorName: mentor.name,
+                          mentorAvatar: mentor.avatar,
+                          studentId: user.id,
+                          studentName: user.name,
+                          date: bookingDate,
+                          time: bookingTime,
+                          subject: bookingSubject,
+                          status: "upcoming",
+                          price: mentor.price,
+                        });
+                        setBookingOpen(false);
+                        setBookingDate("");
+                        setBookingTime("");
+                        setBookingSubject("");
+                        toast.success("Session booked successfully!");
+                      }}
+                    >
+                      <Calendar className="h-4 w-4" /> Confirm Booking
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            ) : (
+              <Button size="lg" variant="hero" className="flex-1 md:flex-none" asChild>
+                <Link to="/login">Log in to Book</Link>
+              </Button>
+            )}
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={() => {
+                if (!user) { navigate("/login"); return; }
+                const chatId = getOrCreateChat(mentor.id, mentor.name, mentor.avatar);
+                navigate(`/chats/${chatId}`);
+              }}
+            >
               <MessageCircle className="h-4 w-4" />
               Message
             </Button>
