@@ -10,6 +10,14 @@ export interface User {
   role: UserRole;
 }
 
+export interface UserReview {
+  mentorId: string;
+  author: string;
+  text: string;
+  rating: number;
+  date: string;
+}
+
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string, role: UserRole) => void;
@@ -17,6 +25,8 @@ interface AuthContextType {
   logout: () => void;
   customMentors: Mentor[];
   addCustomMentor: (mentor: Mentor) => void;
+  userReviews: UserReview[];
+  addReview: (review: UserReview) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -30,6 +40,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [customMentors, setCustomMentors] = useState<Mentor[]>([]);
+  const [userReviews, setUserReviews] = useState<UserReview[]>([]);
 
   const login = (_email: string, _password: string, role: UserRole) => {
     setUser({
@@ -50,8 +61,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setCustomMentors((prev) => [...prev, mentor]);
   };
 
+  const addReview = (review: UserReview) => {
+    setUserReviews((prev) => [...prev, review]);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout, customMentors, addCustomMentor }}>
+    <AuthContext.Provider value={{ user, login, signup, logout, customMentors, addCustomMentor, userReviews, addReview }}>
       {children}
     </AuthContext.Provider>
   );

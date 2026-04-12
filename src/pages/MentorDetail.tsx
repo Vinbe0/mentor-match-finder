@@ -1,9 +1,12 @@
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Star, MapPin, Clock, Globe, BookOpen, MessageCircle } from "lucide-react";
+import { ArrowLeft, Star, MapPin, Clock, Globe, BookOpen, MessageCircle, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { mentors } from "@/data/mentors";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 
 const categoryColor: Record<string, string> = {
   "Programming": "bg-info/10 text-info border-info/20",
@@ -18,7 +21,12 @@ const categoryColor: Record<string, string> = {
 
 const MentorDetail = () => {
   const { id } = useParams();
+  const { user, userReviews, addReview } = useAuth();
   const mentor = mentors.find((m) => m.id === id);
+
+  const [reviewText, setReviewText] = useState("");
+  const [reviewRating, setReviewRating] = useState(5);
+  const [hoverRating, setHoverRating] = useState(0);
 
   if (!mentor) {
     return (
@@ -30,6 +38,29 @@ const MentorDetail = () => {
       </div>
     );
   }
+
+  const mentorUserReviews = userReviews.filter((r) => r.mentorId === mentor.id);
+  const allReviews = [
+    ...mentor.reviews.map((r) => ({ ...r, mentorId: mentor.id })),
+    ...mentorUserReviews,
+  ];
+
+  const handleSubmitReview = () => {
+    if (!reviewText.trim()) {
+      toast.error("Please write a review before submitting.");
+      return;
+    }
+    addReview({
+      mentorId: mentor.id,
+      author: user!.name,
+      text: reviewText.trim(),
+      rating: reviewRating,
+      date: new Date().toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }),
+    });
+    setReviewText("");
+    setReviewRating(5);
+    toast.success("Review submitted!");
+  };
 
   return (
     <div className="min-h-screen">
@@ -69,7 +100,7 @@ const MentorDetail = () => {
                   <div className="flex items-center gap-1 mt-1">
                     <Star className="h-4 w-4 fill-warm text-warm" />
                     <span className="font-medium">{mentor.rating}</span>
-                    <span className="text-muted-foreground text-sm">({mentor.reviewCount} reviews)</span>
+                    <span className="text-muted-foreground text-sm">({allReviews.length} reviews)</span>
                   </div>
                 </div>
               </div>
@@ -115,15 +146,74 @@ const MentorDetail = () => {
           <p className="text-muted-foreground leading-relaxed">{mentor.longBio}</p>
         </div>
 
+        {/* Write a review */}
+        {user && (
+          <div className="rounded-2xl border bg-card p-6 md:p-8 card-shadow">
+            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+              <span className="h-1 w-6 rounded-full hero-gradient inline-block" />
+              Write a Review
+            </h2>
+            <div className="space-y-4">
+              <div>
+                <p className="text-sm text-muted-foreground mb-2">Your rating</p>
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => setReviewRating(i + 1)}
+                      onMouseEnter={() => setHoverRating(i + 1)}
+                      onMouseLeave={() => setHoverRating(0)}
+                      className="p-0.5 transition-transform hover:scale-110"
+                    >
+                      <Star
+                        className={`h-6 w-6 transition-colors ${
+                          i < (hoverRating || reviewRating)
+                            ? "fill-warm text-warm"
+                            : "text-border"
+                        }`}
+                      />
+                    </button>
+                  ))}
+                  <span className="ml-2 text-sm text-muted-foreground">{hoverRating || reviewRating}/5</span>
+                </div>
+              </div>
+              <Textarea
+                placeholder="Share your experience with this mentor..."
+                value={reviewText}
+                onChange={(e) => setReviewText(e.target.value)}
+                rows={4}
+                maxLength={1000}
+              />
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">{reviewText.length}/1000</span>
+                <Button onClick={handleSubmitReview} variant="hero" size="sm">
+                  <Send className="h-4 w-4" />
+                  Submit Review
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {!user && (
+          <div className="rounded-2xl border bg-card p-6 text-center card-shadow">
+            <p className="text-muted-foreground mb-3">Log in to leave a review</p>
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/login">Log in</Link>
+            </Button>
+          </div>
+        )}
+
         {/* Reviews */}
         <div className="rounded-2xl border bg-card p-6 md:p-8 card-shadow">
           <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
             <span className="h-1 w-6 rounded-full hero-gradient inline-block" />
             Reviews
-            <span className="text-muted-foreground font-normal">({mentor.reviews.length})</span>
+            <span className="text-muted-foreground font-normal">({allReviews.length})</span>
           </h2>
           <div className="space-y-5">
-            {mentor.reviews.map((review, i) => (
+            {allReviews.map((review, i) => (
               <div key={i}>
                 {i > 0 && <Separator className="mb-5" />}
                 <div className="flex items-start justify-between">
