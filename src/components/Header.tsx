@@ -16,6 +16,11 @@ const Header = () => {
     { to: "/mentors", label: "Find Mentors" },
   ];
 
+  if (user) {
+    navLinks.push({ to: "/bookings", label: "Bookings" });
+    navLinks.push({ to: "/chats", label: "Messages" });
+  }
+
   if (user?.role === "mentor") {
     navLinks.push({ to: "/create-ad", label: "Create Ad" });
   }

@@ -12,6 +12,8 @@ import MentorDetail from "./pages/MentorDetail";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import CreateAd from "./pages/CreateAd";
+import Bookings from "./pages/Bookings";
+import Chats from "./pages/Chats";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +35,9 @@ const App = () => (
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/create-ad" element={<CreateAd />} />
+                <Route path="/bookings" element={<Bookings />} />
+                <Route path="/chats" element={<Chats />} />
+                <Route path="/chats/:chatId" element={<Chats />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
