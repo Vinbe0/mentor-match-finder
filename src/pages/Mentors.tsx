@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Search, SlidersHorizontal, Sparkles, Wifi, WifiOff } from "lucide-react";
+import { Search, SlidersHorizontal, Sparkles } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
@@ -13,7 +13,7 @@ const Mentors = () => {
   const [subject, setSubject] = useState("all");
   const [sortBy, setSortBy] = useState("price-low");
   const [maxPrice, setMaxPrice] = useState([15000]);
-  const [onlineFilter, setOnlineFilter] = useState<"all" | "online" | "offline">("all");
+  
   const [showFilters, setShowFilters] = useState(false);
   const { customMentors } = useAuth();
 
@@ -26,11 +26,7 @@ const Mentors = () => {
         m.bio.toLowerCase().includes(search.toLowerCase());
       const matchSubject = subject === "all" || m.subjects.includes(subject);
       const matchPrice = m.price <= maxPrice[0];
-      const matchOnline =
-        onlineFilter === "all" ||
-        (onlineFilter === "online" && m.available) ||
-        (onlineFilter === "offline" && !m.available);
-      return matchSearch && matchSubject && matchPrice && matchOnline;
+      return matchSearch && matchSubject && matchPrice;
     });
 
     result.sort((a, b) => {
@@ -41,7 +37,7 @@ const Mentors = () => {
     });
 
     return result;
-  }, [search, subject, sortBy, maxPrice, onlineFilter, allMentors]);
+  }, [search, subject, sortBy, maxPrice, allMentors]);
 
   return (
     <div className="min-h-screen">
@@ -113,29 +109,8 @@ const Mentors = () => {
                 </Select>
               </div>
 
-              <div>
-                <h3 className="text-sm font-semibold mb-3 text-foreground">Status</h3>
-                <div className="flex flex-col gap-1.5">
-                  {([
-                    { value: "all", label: "All", icon: null },
-                    { value: "online", label: "Online", icon: <Wifi className="h-3.5 w-3.5 text-success" /> },
-                    { value: "offline", label: "Offline", icon: <WifiOff className="h-3.5 w-3.5 text-muted-foreground" /> },
-                  ] as const).map((opt) => (
-                    <button
-                      key={opt.value}
-                      onClick={() => setOnlineFilter(opt.value)}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                        onlineFilter === opt.value
-                          ? "bg-primary/10 text-primary"
-                          : "text-muted-foreground hover:bg-muted"
-                      }`}
-                    >
-                      {opt.icon}
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
+
+
 
               <div>
                 <h3 className="text-sm font-semibold mb-3 text-foreground">Sort by</h3>

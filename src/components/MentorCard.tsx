@@ -39,9 +39,19 @@ const MentorCard = ({ mentor }: { mentor: Mentor }) => {
               </h3>
               <p className="text-sm text-muted-foreground">{mentor.location}</p>
             </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
+                mentor.available
+                  ? "bg-success/10 text-success"
+                  : "bg-muted text-muted-foreground"
+              }`}>
+                <span className={`h-1.5 w-1.5 rounded-full ${mentor.available ? "bg-success" : "bg-muted-foreground"}`} />
+                {mentor.available ? "Online" : "Offline"}
+              </span>
             <div className="flex items-center gap-1 shrink-0 px-2 py-0.5 rounded-lg bg-warm/10">
               <Star className="h-3.5 w-3.5 fill-warm text-warm" />
               <span className="text-sm font-semibold text-warm">{mentor.rating}</span>
+            </div>
             </div>
           </div>
         </div>
