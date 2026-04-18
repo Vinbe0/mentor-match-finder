@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
-import { subjects, type Mentor } from "@/data/mentors";
+import { subjects } from "@/data/mentors";
 import { useToast } from "@/hooks/use-toast";
 
 const CreateAd = () => {
