@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
-import { subjects, type Mentor } from "@/data/mentors";
+import { subjects } from "@/data/mentors";
 import { useToast } from "@/hooks/use-toast";
 
 const CreateAd = () => {
@@ -32,21 +32,18 @@ const CreateAd = () => {
     );
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !bio || selectedSubjects.length === 0) {
       toast({ title: "Please fill in required fields", variant: "destructive" });
       return;
     }
 
-    const newMentor: Mentor = {
-      id: crypto.randomUUID(),
+    await addCustomMentor({
       name,
       avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=d94080&color=fff&size=200`,
       subject: selectedSubjects[0],
       subjects: selectedSubjects,
-      rating: 0,
-      reviewCount: 0,
       price: price[0],
       experience: parseInt(experience) || 0,
       bio,
@@ -55,10 +52,7 @@ const CreateAd = () => {
       languages: languages.split(",").map((l) => l.trim()).filter(Boolean),
       location,
       available: true,
-      reviews: [],
-    };
-
-    addCustomMentor(newMentor);
+    });
     toast({ title: "Ad created!", description: "Your mentor listing is now visible." });
     navigate("/mentors");
   };

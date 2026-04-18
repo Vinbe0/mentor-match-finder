@@ -62,7 +62,7 @@ const Header = () => {
                   <Link to="/create-ad"><Plus className="h-3 w-3" /> New Ad</Link>
                 </Button>
               )}
-              <Button variant="ghost" size="sm" onClick={() => { logout(); navigate("/"); }}>
+              <Button variant="ghost" size="sm" onClick={async () => { await logout(); navigate("/"); }}>
                 <LogOut className="h-4 w-4" />
               </Button>
             </>
@@ -107,7 +107,7 @@ const Header = () => {
               {user ? (
                 <>
                   <span className="text-sm text-muted-foreground py-2">{user.name} ({user.role})</span>
-                  <Button variant="ghost" size="sm" onClick={() => { logout(); setMobileOpen(false); navigate("/"); }}>
+                  <Button variant="ghost" size="sm" onClick={async () => { await logout(); setMobileOpen(false); navigate("/"); }}>
                     <LogOut className="h-4 w-4" /> Logout
                   </Button>
                 </>

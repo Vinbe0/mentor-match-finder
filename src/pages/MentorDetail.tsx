@@ -25,8 +25,10 @@ const categoryColor: Record<string, string> = {
 const MentorDetail = () => {
   const { id } = useParams();
   const { user, userReviews, addReview, addBooking, getOrCreateChat } = useAuth();
+  // (customMentors fetched below)
   const navigate = useNavigate();
-  const mentor = mentors.find((m) => m.id === id);
+  const { customMentors } = useAuth();
+  const mentor = [...mentors, ...customMentors].find((m) => m.id === id);
 
   const [reviewText, setReviewText] = useState("");
   const [reviewRating, setReviewRating] = useState(5);
@@ -59,7 +61,7 @@ const MentorDetail = () => {
       return;
     }
     addReview({
-      mentorId: mentor.id,
+      mentorId: mentor!.id,
       author: user!.name,
       text: reviewText.trim(),
       rating: reviewRating,
@@ -179,9 +181,8 @@ const MentorDetail = () => {
                       variant="hero"
                       className="w-full"
                       disabled={!bookingDate || !bookingTime || !bookingSubject}
-                      onClick={() => {
-                        addBooking({
-                          id: crypto.randomUUID(),
+                      onClick={async () => {
+                        await addBooking({
                           mentorId: mentor.id,
                           mentorName: mentor.name,
                           mentorAvatar: mentor.avatar,
@@ -213,10 +214,10 @@ const MentorDetail = () => {
             <Button
               size="lg"
               variant="outline"
-              onClick={() => {
+              onClick={async () => {
                 if (!user) { navigate("/login"); return; }
-                const chatId = getOrCreateChat(mentor.id, mentor.name, mentor.avatar);
-                navigate(`/chats/${chatId}`);
+                const chatId = await getOrCreateChat(mentor.id, mentor.name, mentor.avatar);
+                if (chatId) navigate(`/chats/${chatId}`);
               }}
             >
               <MessageCircle className="h-4 w-4" />

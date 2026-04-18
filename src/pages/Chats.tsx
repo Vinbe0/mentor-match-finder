@@ -39,10 +39,11 @@ const Chats = () => {
     };
   };
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!msgText.trim() || !activeChat) return;
-    sendMessage(activeChat.id, msgText.trim());
+    const text = msgText.trim();
     setMsgText("");
+    await sendMessage(activeChat.id, text);
   };
 
   return (

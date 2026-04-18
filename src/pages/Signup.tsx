@@ -20,13 +20,17 @@ const Signup = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       if (!first || !email || !password) {
         toast({ title: "Please fill in required fields", variant: "destructive" });
         return;
       }
-      signup(`${first} ${last}`.trim(), email, password, isMentor ? "mentor" : "student");
+      const { error } = await signup(`${first} ${last}`.trim(), email, password, isMentor ? "mentor" : "student");
+      if (error) {
+        toast({ title: "Signup failed", description: error, variant: "destructive" });
+        return;
+      }
       toast({ title: "Account created!", description: isMentor ? "You can now create your mentor ad." : "Welcome to Talimger!" });
       navigate(isMentor ? "/create-ad" : "/mentors");
     };
