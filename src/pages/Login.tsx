@@ -12,17 +12,24 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<"student" | "mentor">("student");
+  const [submitting, setSubmitting] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
       toast({ title: "Please fill in all fields", variant: "destructive" });
       return;
     }
-    login(email, password, role);
+    setSubmitting(true);
+    const { error } = await login(email, password);
+    setSubmitting(false);
+    if (error) {
+      toast({ title: "Login failed", description: error, variant: "destructive" });
+      return;
+    }
     toast({ title: "Welcome back!" });
     navigate("/");
   };
@@ -80,7 +87,7 @@ const Login = () => {
               </button>
             </div>
           </div>
-          <Button className="w-full" size="lg">Sign in</Button>
+          <Button className="w-full" size="lg" disabled={submitting}>{submitting ? "Signing in..." : "Sign in"}</Button>
         </form>
 
         <p className="text-center text-sm text-muted-foreground">

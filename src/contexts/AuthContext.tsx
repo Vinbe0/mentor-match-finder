@@ -188,7 +188,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         date: b.date,
         time: b.time,
         subject: b.subject,
-        status: b.status,
+        status: b.status as Booking["status"],
         price: b.price,
       })));
     };
@@ -327,7 +327,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         date: data.date,
         time: data.time,
         subject: data.subject,
-        status: data.status,
+        status: data.status as Booking["status"],
         price: data.price,
       }, ...prev]);
     }
