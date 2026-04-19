@@ -120,17 +120,17 @@ const Index = () => {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { name: "Programming", Icon: Code, bg: "bg-info/10 hover:bg-info/20 border-info/20" },
-              { name: "UI/UX Design", Icon: Palette, bg: "bg-primary/10 hover:bg-primary/20 border-primary/20" },
-              { name: "Marketing", Icon: TrendingUp, bg: "bg-warm/10 hover:bg-warm/20 border-warm/20" },
-              { name: "Data Science", Icon: BarChart3, bg: "bg-accent/10 hover:bg-accent/20 border-accent/20" },
+              { name: "Programming", Icon: Code, bg: "bg-info/10 hover:bg-info/20 border-info/20", iconColor: "text-info" },
+              { name: "UI/UX Design", Icon: Palette, bg: "bg-primary/10 hover:bg-primary/20 border-primary/20", iconColor: "text-primary" },
+              { name: "Marketing", Icon: TrendingUp, bg: "bg-warm/10 hover:bg-warm/20 border-warm/20", iconColor: "text-warm" },
+              { name: "Data Science", Icon: BarChart3, bg: "bg-accent/10 hover:bg-accent/20 border-accent/20", iconColor: "text-accent" },
             ].map((cat) => (
               <Link
                 key={cat.name}
                 to="/mentors"
                 className={`flex flex-col items-center gap-3 p-6 rounded-2xl border ${cat.bg} transition-all duration-200 hover:-translate-y-0.5`}
               >
-                <cat.Icon className="h-8 w-8" />
+                <cat.Icon className={`h-8 w-8 ${cat.iconColor}`} />
                 <span className="font-medium text-sm">{cat.name}</span>
               </Link>
             ))}
