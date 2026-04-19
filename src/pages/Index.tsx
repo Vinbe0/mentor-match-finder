@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Search, Star, Users, Shield, ArrowRight, Sparkles, Code, Palette, TrendingUp, BarChart3 } from "lucide-react";
+import { Search, Star, Users, Shield, ArrowRight, Sparkles, Code, Palette, TrendingUp, BarChart3, Calendar, Video } from "lucide-react";
 
 const Index = () => {
   return (
@@ -133,6 +133,50 @@ const Index = () => {
                 <cat.Icon className={`h-8 w-8 ${cat.iconColor}`} />
                 <span className="font-medium text-sm">{cat.name}</span>
               </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section className="border-t bg-secondary/30">
+        <div className="container py-16 md:py-24">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl md:text-3xl font-bold mb-3">How It Works</h2>
+            <p className="text-muted-foreground">Three simple steps to find your mentor</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                step: "01",
+                title: "Browse Mentors",
+                desc: "Filter by subject, price, and rating to find your perfect match.",
+                Icon: Search,
+                color: "bg-info/10 text-info",
+              },
+              {
+                step: "02",
+                title: "Book a Session",
+                desc: "Choose a time that works for you and book directly from the profile.",
+                Icon: Calendar,
+                color: "bg-primary/10 text-primary",
+              },
+              {
+                step: "03",
+                title: "Start Learning",
+                desc: "Connect via video call and unlock your potential with expert guidance.",
+                Icon: Video,
+                color: "bg-accent/10 text-accent",
+              },
+            ].map((item) => (
+              <div key={item.step} className="flex flex-col items-center text-center p-6">
+                <div className={`h-16 w-16 rounded-2xl ${item.color} flex items-center justify-center mb-5`}>
+                  <item.Icon className="h-8 w-8" />
+                </div>
+                <div className="text-sm font-bold text-muted-foreground mb-2">{item.step}</div>
+                <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+              </div>
             ))}
           </div>
         </div>
