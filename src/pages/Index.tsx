@@ -52,6 +52,17 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Marquee banner */}
+      <div className="bg-primary text-primary-foreground overflow-hidden whitespace-nowrap py-2">
+        <div className="animate-marquee inline-block">
+          <span className="text-sm font-semibold tracking-wide">
+            ONLY UNTIL THE END OF THE WEEK ★ HURRY UP AND FIND YOUR MENTOR! ★ 🚀 20% OFF YOUR FIRST MONTH OF LEARNING &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            ONLY UNTIL THE END OF THE WEEK ★ HURRY UP AND FIND YOUR MENTOR! ★ 🚀 20% OFF YOUR FIRST MONTH OF LEARNING &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            ONLY UNTIL THE END OF THE WEEK ★ HURRY UP AND FIND YOUR MENTOR! ★ 🚀 20% OFF YOUR FIRST MONTH OF LEARNING &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          </span>
+        </div>
+      </div>
+
       {/* Features */}
       <section className="border-t bg-secondary/50">
         <div className="container py-16 md:py-24">
