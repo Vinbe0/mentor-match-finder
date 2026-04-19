@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Search, Star, Users, Shield, ArrowRight, Sparkles, Code, Palette, TrendingUp, BarChart3, Calendar, Video } from "lucide-react";
+import { Search, Star, Users, Shield, ArrowRight, Sparkles, Code, Palette, TrendingUp, BarChart3, Calendar, Video, Heart, DollarSign, Megaphone, Lock, Headphones, BadgeCheck } from "lucide-react";
 
 const Index = () => {
   return (
@@ -178,6 +178,97 @@ const Index = () => {
                 <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Become a Mentor */}
+      <section className="border-t relative overflow-hidden">
+        <div className="absolute inset-0 gradient-mesh" />
+        <div className="absolute top-10 right-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-10 left-20 w-64 h-64 bg-accent/10 rounded-full blur-3xl" />
+        <div className="container py-16 md:py-24 relative">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left: Heading + CTA + Stats */}
+            <div>
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent/10 text-accent text-xs font-semibold tracking-wider mb-5">
+                <Sparkles className="h-3.5 w-3.5" />
+                JOIN 500+ EXPERTS
+              </div>
+              <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight mb-5">
+                Inspire. Teach. <span className="text-gradient">Earn.</span>
+              </h2>
+              <p className="text-muted-foreground text-lg mb-8 max-w-lg">
+                Transform your expertise into impact. Share your knowledge with eager learners and build your personal brand on Talimger.
+              </p>
+              <Button size="lg" variant="hero" asChild className="mb-10">
+                <Link to="/signup">
+                  Apply Now
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                {[
+                  { value: "10,000+", label: "ACTIVE STUDENTS" },
+                  { value: "4.9", label: "AVG RATING" },
+                  { value: "₸120K+", label: "TOP EARNERS" },
+                  { value: "50K+", label: "SESSIONS DONE" },
+                ].map((s) => (
+                  <div key={s.label}>
+                    <div className="text-xl md:text-2xl font-bold text-gradient">{s.value}</div>
+                    <div className="text-[10px] text-muted-foreground mt-1 tracking-wider">{s.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right: Benefits */}
+            <div className="space-y-4">
+              {[
+                {
+                  Icon: Heart,
+                  iconBg: "bg-primary/10 text-primary",
+                  title: "Do What You Love",
+                  desc: "Turn your passion and expertise into a meaningful side business or full-time career.",
+                },
+                {
+                  Icon: DollarSign,
+                  iconBg: "bg-success/10 text-success",
+                  title: "Set Your Own Rate",
+                  desc: "You decide your hourly rate. Our top mentors earn over ₸120,000 per month.",
+                },
+                {
+                  Icon: Megaphone,
+                  iconBg: "bg-accent/10 text-accent",
+                  title: "Grow Your Audience",
+                  desc: "Reach thousands of motivated learners who are actively searching for your expertise.",
+                },
+              ].map((b) => (
+                <div key={b.title} className="flex gap-4 p-5 rounded-2xl border bg-card card-shadow hover:card-shadow-hover transition-all">
+                  <div className={`h-12 w-12 rounded-xl ${b.iconBg} flex items-center justify-center shrink-0`}>
+                    <b.Icon className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-1">{b.title}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{b.desc}</p>
+                  </div>
+                </div>
+              ))}
+
+              <div className="flex flex-wrap gap-4 pt-4 justify-center">
+                {[
+                  { Icon: Lock, label: "Secure Payments" },
+                  { Icon: Headphones, label: "24/7 Support" },
+                  { Icon: BadgeCheck, label: "Verified Mentors" },
+                ].map((t) => (
+                  <div key={t.label} className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <t.Icon className="h-4 w-4 text-primary" />
+                    {t.label}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
