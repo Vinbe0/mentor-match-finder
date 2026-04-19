@@ -27,8 +27,8 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold text-sm mb-3">Support</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-primary transition-colors">Help Center</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Contact Us</a></li>
+              <li><Link to="/help" className="hover:text-primary transition-colors">Help Center</Link></li>
+              <li><a href="mailto:support@talimger.com" className="hover:text-primary transition-colors">Contact Us</a></li>
             </ul>
           </div>
         </div>
