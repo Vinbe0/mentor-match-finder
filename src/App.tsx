@@ -14,6 +14,7 @@ import Signup from "./pages/Signup";
 import CreateAd from "./pages/CreateAd";
 import Bookings from "./pages/Bookings";
 import Chats from "./pages/Chats";
+import HelpCenter from "./pages/HelpCenter";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => (
                 <Route path="/bookings" element={<Bookings />} />
                 <Route path="/chats" element={<Chats />} />
                 <Route path="/chats/:chatId" element={<Chats />} />
+                <Route path="/help" element={<HelpCenter />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
