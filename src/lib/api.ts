@@ -199,7 +199,7 @@ export const reviewsApi = {
 
 export const bookingsApi = {
   list: () => api<ApiBooking[]>("/bookings"),
-  create: (b: { mentor_id: string; subject?: string; price?: number; meeting_date?: string; meeting_time?: string }) =>
+  create: (b: { mentor_id: string; student_id: string; subject?: string; price?: number; meeting_date?: string; meeting_time?: string }) =>
     api<ApiBooking>("/bookings", { method: "POST", body: b }),
   patchStatus: (id: string, status: string) =>
     api<ApiBooking>(`/bookings/${id}`, { method: "PATCH", query: { status } }),

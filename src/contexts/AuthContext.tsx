@@ -72,6 +72,7 @@ interface AuthContextType {
   chats: Chat[];
   getOrCreateChat: (mentorId: string, mentorName: string, mentorAvatar: string) => Promise<string>;
   sendMessage: (chatId: string, text: string) => Promise<void>;
+  refreshChats: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -258,10 +259,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [user]);
   useEffect(() => {
     refreshChats();
-    if (!user) return;
-    const i = setInterval(refreshChats, 6000);
-    return () => clearInterval(i);
-  }, [refreshChats, user]);
+  }, [refreshChats]);
 
   // ---------- Auth actions ----------
   const login = async (email: string, password: string) => {
@@ -298,6 +296,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (!user) return;
     try {
       await mentorsApi.create({
+        user_id: user.id,
         subjects: mentor.subjects.join(","),
         price: mentor.price,
         experience: mentor.experience,
@@ -326,6 +325,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (!user) return;
     await bookingsApi.create({
       mentor_id: booking.mentorId,
+      student_id: user.id,
       subject: booking.subject,
       price: booking.price,
       meeting_date: booking.date,
@@ -365,7 +365,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         customMentors, refreshMentors, addCustomMentor,
         userReviews, addReview,
         bookings, addBooking, cancelBooking,
-        chats, getOrCreateChat, sendMessage,
+        chats, getOrCreateChat, sendMessage, refreshChats,
       }}
     >
       {children}
