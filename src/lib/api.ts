@@ -15,6 +15,7 @@ interface RequestOptions {
   method?: "GET" | "POST" | "PATCH" | "DELETE";
   body?: unknown;
   form?: URLSearchParams;
+  formData?: FormData;
   query?: Record<string, string | number | boolean | undefined | null>;
   auth?: boolean;
 }
@@ -28,7 +29,7 @@ export class ApiError extends Error {
 }
 
 export async function api<T = any>(path: string, opts: RequestOptions = {}): Promise<T> {
-  const { method = "GET", body, form, query, auth = true } = opts;
+  const { method = "GET", body, form, formData, query, auth = true } = opts;
   const url = new URL(path.startsWith("http") ? path : `${API_BASE_URL}${path}`);
   if (query) {
     Object.entries(query).forEach(([k, v]) => {
@@ -43,7 +44,9 @@ export async function api<T = any>(path: string, opts: RequestOptions = {}): Pro
   }
 
   let payload: BodyInit | undefined;
-  if (form) {
+  if (formData) {
+    payload = formData;
+  } else if (form) {
     headers["Content-Type"] = "application/x-www-form-urlencoded";
     payload = form;
   } else if (body !== undefined) {
@@ -94,9 +97,13 @@ export interface ApiProfile {
 export interface ApiMentorAd {
   id: string;
   user_id: string;
-  subjects: string; // comma-separated on backend
+  subjects: string;
   price: number;
   experience: number;
+  education?: string | null;
+  languages?: string | null;
+  location?: string | null;
+  long_bio?: string | null;
   available: boolean;
 }
 
@@ -104,6 +111,10 @@ export interface ApiBooking {
   id: string;
   mentor_id: string;
   student_id: string;
+  subject: string;
+  price: number;
+  meeting_date: string;
+  meeting_time: string;
   status: string;
   booking_date: string;
 }
@@ -114,6 +125,7 @@ export interface ApiReview {
   author_id: string;
   rating: number;
   comment: string;
+  created_at?: string;
 }
 
 export interface ApiChat {
@@ -133,7 +145,7 @@ export interface ApiMessage {
 
 export const authApi = {
   signup: (name: string, email: string, password: string, role: Role) =>
-    api<{ access_token: string; token_type: string }>("/auth/signup", {
+    api<{ access_token: string; token_type?: string }>("/auth/signup", {
       method: "POST",
       auth: false,
       query: { name, email, password, role },
@@ -142,7 +154,7 @@ export const authApi = {
     const form = new URLSearchParams();
     form.set("username", email);
     form.set("password", password);
-    return api<{ access_token: string; token_type: string }>("/auth/login", {
+    return api<{ access_token: string; token_type?: string }>("/auth/login", {
       method: "POST",
       auth: false,
       form,
@@ -155,17 +167,22 @@ export const authApi = {
 export const profilesApi = {
   me: () => api<ApiProfile>("/profiles/me"),
   byUser: (userId: string) => api<ApiProfile | null>(`/profiles/${userId}`, { auth: false }),
-  patch: (name: string) => api<ApiProfile>("/profiles/me", { method: "PATCH", query: { name } }),
+  patch: (name?: string, bio?: string) =>
+    api<ApiProfile>("/profiles/me", { method: "PATCH", query: { name, bio } }),
   roles: () => api<{ roles: Role[] }>("/roles/me"),
+  uploadAvatar: (file: File) => {
+    const fd = new FormData();
+    fd.append("file", file);
+    return api<{ url: string }>("/uploads/avatar", { method: "POST", formData: fd });
+  },
 };
 
-// Backend returns list of [MentorAd, Profile] tuples
 export type MentorListRow = [ApiMentorAd, ApiProfile];
 
 export const mentorsApi = {
   list: () => api<MentorListRow[]>("/mentors", { auth: false }),
   get: (id: string) => api<ApiMentorAd>(`/mentors/${id}`, { auth: false }),
-  create: (ad: { subjects: string; price: number; experience: number; available: boolean }) =>
+  create: (ad: Partial<ApiMentorAd>) =>
     api<ApiMentorAd>("/mentors", { method: "POST", body: ad }),
   patchPrice: (id: string, price: number) =>
     api<ApiMentorAd>(`/mentors/${id}`, { method: "PATCH", query: { price } }),
@@ -173,7 +190,8 @@ export const mentorsApi = {
 };
 
 export const reviewsApi = {
-  list: () => api<ApiReview[]>("/reviews", { auth: false }),
+  list: (mentor_id?: string) =>
+    api<ApiReview[]>("/reviews", { auth: false, query: { mentor_id } }),
   create: (mentor_id: string, rating: number, comment: string) =>
     api<ApiReview>("/reviews", { method: "POST", body: { mentor_id, rating, comment } }),
   remove: (id: string) => api(`/reviews/${id}`, { method: "DELETE" }),
@@ -181,8 +199,8 @@ export const reviewsApi = {
 
 export const bookingsApi = {
   list: () => api<ApiBooking[]>("/bookings"),
-  create: (mentor_id: string) =>
-    api<ApiBooking>("/bookings", { method: "POST", query: { mentor_id } }),
+  create: (b: { mentor_id: string; subject?: string; price?: number; meeting_date?: string; meeting_time?: string }) =>
+    api<ApiBooking>("/bookings", { method: "POST", body: b }),
   patchStatus: (id: string, status: string) =>
     api<ApiBooking>(`/bookings/${id}`, { method: "PATCH", query: { status } }),
 };
@@ -191,7 +209,21 @@ export const chatsApi = {
   list: () => api<ApiChat[]>("/chats"),
   create: (mentor_id: string) =>
     api<ApiChat>("/chats", { method: "POST", query: { mentor_id } }),
-  messages: (chat_id: string) => api<ApiMessage[]>(`/messages/${chat_id}`),
+  messages: (chat_id: string) => api<ApiMessage[]>(`/chats/${chat_id}/messages`),
   send: (chat_id: string, text: string) =>
-    api<ApiMessage>("/messages", { method: "POST", query: { chat_id, text } }),
+    api<ApiMessage>(`/chats/${chat_id}/messages`, { method: "POST", query: { text } }),
 };
+
+// ---------- WebSocket ----------
+export function openChatSocket(onMessage: (msg: string) => void): WebSocket | null {
+  const t = tokenStore.get();
+  if (!t) return null;
+  const wsUrl = API_BASE_URL.replace(/^http/, "ws") + `/ws?token=${encodeURIComponent(t)}`;
+  try {
+    const ws = new WebSocket(wsUrl);
+    ws.onmessage = (ev) => onMessage(ev.data);
+    return ws;
+  } catch {
+    return null;
+  }
+}
