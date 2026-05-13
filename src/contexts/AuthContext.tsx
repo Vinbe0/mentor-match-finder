@@ -72,6 +72,7 @@ interface AuthContextType {
   chats: Chat[];
   getOrCreateChat: (mentorId: string, mentorName: string, mentorAvatar: string) => Promise<string>;
   sendMessage: (chatId: string, text: string) => Promise<void>;
+  refreshChats: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
