@@ -296,6 +296,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (!user) return;
     try {
       await mentorsApi.create({
+        user_id: user.id,
         subjects: mentor.subjects.join(","),
         price: mentor.price,
         experience: mentor.experience,
