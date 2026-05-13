@@ -302,10 +302,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         price: mentor.price,
         experience: mentor.experience,
         available: mentor.available,
+        education: mentor.education || null,
+        languages: (mentor.languages || []).join(","),
+        location: mentor.location || null,
+        long_bio: mentor.longBio || mentor.bio || null,
       });
-      // Update profile name/bio/avatar so list view shows them
-      if (mentor.bio || mentor.avatar) {
-        try { await profilesApi.patch(mentor.name); } catch {/* ignore */}
+      if (mentor.name || mentor.bio) {
+        try { await profilesApi.patch(mentor.name, mentor.bio); } catch {/* ignore */}
       }
       await refreshMentors();
     } catch (e) {
@@ -321,7 +324,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const addBooking = async (booking: Omit<Booking, "id">) => {
     if (!user) return;
-    await bookingsApi.create(booking.mentorId);
+    await bookingsApi.create({
+      mentor_id: booking.mentorId,
+      subject: booking.subject,
+      price: booking.price,
+      meeting_date: booking.date,
+      meeting_time: booking.time,
+    });
     await refreshBookings();
   };
 
