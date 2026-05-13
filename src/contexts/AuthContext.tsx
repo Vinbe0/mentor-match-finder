@@ -156,10 +156,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             price: ad.price,
             experience: ad.experience,
             bio: prof?.bio || "",
-            longBio: prof?.bio || "",
-            education: "",
-            languages: [],
-            location: "",
+            longBio: ad.long_bio || prof?.bio || "",
+            education: ad.education || "",
+            languages: (ad.languages || "").split(",").map((s) => s.trim()).filter(Boolean),
+            location: ad.location || "",
             available: ad.available,
             reviews: [],
           };
@@ -205,7 +205,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const status: Booking["status"] =
           b.status === "cancelled" ? "cancelled" :
           b.status === "completed" ? "completed" : "upcoming";
-        const d = new Date(b.booking_date);
+        const fallback = b.booking_date ? new Date(b.booking_date) : new Date();
         return {
           id: b.id,
           mentorId: b.mentor_id,
@@ -213,11 +213,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           mentorAvatar: avatarFor(mentor),
           studentId: b.student_id,
           studentName: student?.name || "Student",
-          date: d.toISOString().slice(0, 10),
-          time: d.toTimeString().slice(0, 5),
-          subject: "",
+          date: b.meeting_date || fallback.toISOString().slice(0, 10),
+          time: b.meeting_time || fallback.toTimeString().slice(0, 5),
+          subject: b.subject || "",
           status,
-          price: 0,
+          price: b.price ?? 0,
         };
       }));
       setBookings(enriched);
@@ -302,10 +302,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         price: mentor.price,
         experience: mentor.experience,
         available: mentor.available,
+        education: mentor.education || null,
+        languages: (mentor.languages || []).join(","),
+        location: mentor.location || null,
+        long_bio: mentor.longBio || mentor.bio || null,
       });
-      // Update profile name/bio/avatar so list view shows them
-      if (mentor.bio || mentor.avatar) {
-        try { await profilesApi.patch(mentor.name); } catch {/* ignore */}
+      if (mentor.name || mentor.bio) {
+        try { await profilesApi.patch(mentor.name, mentor.bio); } catch {/* ignore */}
       }
       await refreshMentors();
     } catch (e) {
@@ -321,7 +324,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const addBooking = async (booking: Omit<Booking, "id">) => {
     if (!user) return;
-    await bookingsApi.create(booking.mentorId);
+    await bookingsApi.create({
+      mentor_id: booking.mentorId,
+      subject: booking.subject,
+      price: booking.price,
+      meeting_date: booking.date,
+      meeting_time: booking.time,
+    });
     await refreshBookings();
   };
 
