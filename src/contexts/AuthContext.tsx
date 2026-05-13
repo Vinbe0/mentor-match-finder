@@ -365,7 +365,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         customMentors, refreshMentors, addCustomMentor,
         userReviews, addReview,
         bookings, addBooking, cancelBooking,
-        chats, getOrCreateChat, sendMessage,
+        chats, getOrCreateChat, sendMessage, refreshChats,
       }}
     >
       {children}
