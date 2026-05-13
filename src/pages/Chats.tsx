@@ -7,7 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 
 const Chats = () => {
   const { chatId } = useParams();
-  const { user, chats, sendMessage } = useAuth();
+  const { user, chats, sendMessage, refreshChats } = useAuth();
   const [msgText, setMsgText] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -16,6 +16,13 @@ const Chats = () => {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [activeChat?.messages.length]);
+
+  useEffect(() => {
+    if (!user) return;
+    refreshChats();
+    const i = setInterval(refreshChats, 6000);
+    return () => clearInterval(i);
+  }, [user, refreshChats]);
 
   if (!user) {
     return (
