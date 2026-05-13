@@ -325,6 +325,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (!user) return;
     await bookingsApi.create({
       mentor_id: booking.mentorId,
+      student_id: user.id,
       subject: booking.subject,
       price: booking.price,
       meeting_date: booking.date,
