@@ -259,10 +259,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [user]);
   useEffect(() => {
     refreshChats();
-    if (!user) return;
-    const i = setInterval(refreshChats, 6000);
-    return () => clearInterval(i);
-  }, [refreshChats, user]);
+  }, [refreshChats]);
 
   // ---------- Auth actions ----------
   const login = async (email: string, password: string) => {
