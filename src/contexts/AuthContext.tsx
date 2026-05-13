@@ -205,7 +205,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const status: Booking["status"] =
           b.status === "cancelled" ? "cancelled" :
           b.status === "completed" ? "completed" : "upcoming";
-        const d = new Date(b.booking_date);
+        const fallback = b.booking_date ? new Date(b.booking_date) : new Date();
         return {
           id: b.id,
           mentorId: b.mentor_id,
@@ -213,11 +213,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           mentorAvatar: avatarFor(mentor),
           studentId: b.student_id,
           studentName: student?.name || "Student",
-          date: d.toISOString().slice(0, 10),
-          time: d.toTimeString().slice(0, 5),
-          subject: "",
+          date: b.meeting_date || fallback.toISOString().slice(0, 10),
+          time: b.meeting_time || fallback.toTimeString().slice(0, 5),
+          subject: b.subject || "",
           status,
-          price: 0,
+          price: b.price ?? 0,
         };
       }));
       setBookings(enriched);
